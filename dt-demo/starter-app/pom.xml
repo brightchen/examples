@@ -14,7 +14,7 @@
   <description>Empty Application Package that includes the Malhar and Megh operator libraries for basis of DT AppBuilder</description>
 
   <properties>
-    <megh.version>3.3.0</megh.version>
+    <megh.version>3.4.0-SNAPSHOT</megh.version>
   </properties>
 
   <dependencies>
