@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<configuration>
+  <!-- 
+  <property>
+    <name>dt.application.{appName}.operator.{opName}.prop.{propName}</name>
+    <value>some-default-value (if value is not specified, it is required from the user or custom config when launching)</value>
+  </property>
+  -->
+  <!-- memory assigned to app master
+  <property>
+    <name>dt.attr.MASTER_MEMORY_MB</name>
+    <value>2048</value>
+  </property>
+  -->
+  
+  <property>
+    <name>dt.application.KafkaExactlyOnceApp.operator.kafkaOutputOperator.metadataBrokerList</name>
+    <value>localhost:9092</value>
+  </property>
+ 
+  <property>
+    <name>dt.application.KafkaExactlyOnceApp.operator.kafkaOutputOperator.topic</name>
+    <value>testTopic</value>
+  </property>
+  
+  <property>
+    <name>dt.application.KafkaExactlyOnceApp.operator.kafkaOutputOperator.controlTopic</name>
+    <value>controlTopic</value>
+  </property>
+</configuration>
+
