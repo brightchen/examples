@@ -19,13 +19,16 @@ import com.datatorrent.common.util.BaseOperator;
 @ApplicationAnnotation(name="MemManage")
 public class MemManageApp implements StreamingApplication
 {
+  private static final int valueLen = 1000;
+
   @Override
   public void populateDAG(DAG dag, Configuration conf)
   {
     Generator generator = new Generator();
     dag.addOperator("generator", generator);
 
-    OutputOperator output = new OutputOperator();
+    OutputOperator<String> output = new OutputOperator<String>();
+
     dag.addOperator("output", output);
 
     dag.addStream("stream", generator.output, output.data).setLocality(DAG.Locality.NODE_LOCAL);
@@ -36,10 +39,10 @@ public class MemManageApp implements StreamingApplication
     public final transient DefaultOutputPort<String> output = new DefaultOutputPort<String>();
     protected char[] chars;
 
-    private int numOfValues = 100000;
+    private int numOfValues = 1;
     private transient String[] values = new String[numOfValues];
     private Random random = new Random();
-    private int valueLen = 1000;
+
 
     private void initValues()
     {
@@ -121,7 +124,7 @@ public class MemManageApp implements StreamingApplication
 
   public static class OutputOperator<T> extends BaseOperator
   {
-    private static final Logger logger = LoggerFactory.getLogger(OutputOperator.class);
+    protected static final Logger logger = LoggerFactory.getLogger(OutputOperator.class);
 
     private long totalCount = 0;
     private long count = 0;
@@ -140,7 +143,11 @@ public class MemManageApp implements StreamingApplication
     public void processTuple(T tuple)
     {
       ++count;
+      if(tuple instanceof String && ((String)tuple).length() != valueLen) {
+        logger.error("Incorrect message. expect length: {}; actual length: {}", valueLen, ((String)tuple).length());
+      }
     }
+
 
     @Override
     public void setup(OperatorContext context)
@@ -153,7 +160,7 @@ public class MemManageApp implements StreamingApplication
     public void endWindow()
     {
       long now = System.currentTimeMillis();
-      if(now - beginTime >= 3000) {
+      if(now - beginTime >= 2000) {
         totalCount += count;
         logger.info("total: count: {}; average: {}", totalCount, totalCount * 1000 / (now - totalBeginTime));
         logger.info("period: count: {}; average: {}", count, count * 1000 / (now - beginTime));
